@@ -23,8 +23,8 @@ FROM tbPozycjeFaktur pf
 JOIN tbFaktury f ON f.IDFaktury = pf.FakturaID
 --where
 GROUP BY pf.FakturaID  -- f.IDFaktury 
---HAVING SUM(CenaSprz)  > 33
-ORDER BY SUM(CenaSprz) 
+--HAVING SUM(CenaSprz)  > 200
+ORDER BY SUM(CenaSprz) DESC
 
 USE BS
 GO
@@ -34,18 +34,6 @@ JOIN tblKategorie k ON k.ID_Kategoria = t.Kategoria_ID
 WHERE k.NazwaKategorii != 'owoce'
 GROUP BY NazwaKategorii, Kategoria_ID -- Czy oba te pola s¹ potrzebne?
 
-
-/* æwiczenia */
--- 1. Baza HM: dla ka¿dego wykonawcy wyœwietl nazwa, œredni¹ cene, oraz sumê cen jego albumów (HM -> tbTowary). 
---		Posortuj wyniki po nazwie wykonawcy, a nastêpnie usuñ z wyniku te zespo³y, dla których œrednia jest mniejsza od 35
--- 2. Baza Sprzeda¿: Wyœwietl nazwê i iloœæ zamówieñ (tab sprzeda¿) dla ka¿dego klienta. Posortuj po iloœci zamówieñ
--- 3. Baza Sprzeda¿: wyœwietl w jednym polu, oddzielone przecinkami, nazwiska pracowników z podzia³em na stanowiska. 
-
-
-
-/* ROLLUP CUBE GROUPING SETS */
-
--- ROLLUP: Generuje agregacje na wielu poziomach hierarchii. 
 USE HM
 GO
 SELECT 
@@ -55,10 +43,22 @@ SELECT
 FROM 
     tbPozycjeFaktur p
 GROUP BY 
-    ROLLUP(p.TowarID, p.FakturaID)
+    p.TowarID, p.FakturaID
 ORDER BY  p.FakturaID, p.TowarID;
 
+/* æwiczenia */
+-- 1. Baza HM: dla ka¿dego wykonawcy wyœwietl nazwa, œredni¹ cene, oraz sumê cen jego albumów (HM -> tbTowary). 
+--		Posortuj wyniki po nazwie wykonawcy, a nastêpnie usuñ z wyniku te zespo³y, dla których œrednia jest mniejsza od 35
+-- 2. Baza Sprzeda¿: Wyœwietl nazwê i iloœæ zamówieñ (tab sprzeda¿) dla ka¿dego klienta. Posortuj po iloœci zamówieñ
+-- 3. Baza Sprzeda¿: wyœwietl w jednym polu, oddzielone przecinkami, nazwiska pracowników z podzia³em na stanowiska. 
 
+
+
+
+
+
+
+/*Bardziej Zaawansowane grupowanie*/
 SELECT
 	Wykonawca, 
 	YEAR(datasprzed ) as Rok,

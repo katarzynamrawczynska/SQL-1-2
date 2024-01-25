@@ -15,7 +15,7 @@ WHERE cena = (SELECT MAX(cena) FROM tbTowary)
 -- u¿ycie w warunku z operatorem ANY, ale szybciej zadzia³a, gdy przerobimy na INNER JOIN
 SELECT nazwa 
 FROM hm.dbo.tbKlienci
-WHERE nazwa = ANY(SELECT NazwaFirmy FROM BS.dbo.tblKlienci)
+WHERE nazwa = ANY(SELECT NazwaFirmy FROM tblKlienci)
 
 -- u¿ycie w JOIN z prefiltrowaniem - zbêdne dane s¹ odfiltrowane zanim nast¹pi po³¹czenie - mo¿e przyœpieszyæ 
 -- czas wykonania, ale komplikuje sk³adnie
@@ -49,11 +49,7 @@ FROM
 
 /* æwiczenia */
 -- 1.  Wyœwietl wszystkie dane faktur wraz z opisem najœwie¿szej i najstarszej faktury w bazie (MAX i MIN data)
--- 2. Napisz zapytanie które ³¹czy wszystkie tabele inner join wed³ug relacji. Nastêpnie w warunku WHERE odfiltrowuje 
--- tylko te dane, gdzie faktura nie zosta³a uregulowana
--- 3(cd. punktu 2). ogranicz kolumny do nazwy klienta, towaru, daty faktury, iloœci i ceny sprzeda¿y.
--- zmieñ warunek WHERE na taki, gdzie interesuj¹ nas tylko te wyniki, gdzie suma cenysprzeda¿y dla ca³ej faktury jest wiêksza od œredniej ceny sprzeda¿y na fakturze w bazie
-
+-- 2. Wyœwietl 
 
 
 /* CTE */
@@ -89,7 +85,6 @@ SELECT f.IDFaktury, f.KlientID, p.TotalCena
 FROM tbFaktury f
 JOIN PrefiltrowanePozycje p ON f.IDFaktury = p.FakturaID
 
-
 -- U¿ycie CTE dla dodatkowej kolumny
 WITH SumaCen AS (
     SELECT FakturaID, SUM(CenaSprz) AS TotalCena 
@@ -100,6 +95,8 @@ SELECT f.IDFaktury, f.KlientID, p.TotalCena
 FROM tbFaktury f
 LEFT JOIN SumaCen p ON f.IDFaktury = p.FakturaID
 
+
+CREATE PROCEDURE pozycje_fak @FakturaID intASBEGIN	WITH tytuly_wybrabe AS	(select t.[tytul]from [dbo].[tbTowary] as tinner join [dbo].[tbPozycjeFaktur] as pf on pf.[TowarID] = t.[IDTowaru]where pf.[FakturaID] = @FakturaIDENDGOEXECUTE pozycje_fak @FakturaID = 5GO
 
 -- subselect vs CTE u¿ywane wielokrotnie
 

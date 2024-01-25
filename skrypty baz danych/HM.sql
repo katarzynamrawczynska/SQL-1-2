@@ -1,3 +1,5 @@
+CREATE DATABASE HM
+GO
 USE [HM]
 GO
 /****** Object:  Table [dbo].[tbFaktury]    Script Date: 15.01.2024 16:17:19 ******/

@@ -1,4 +1,6 @@
-USE [BS]
+CREATE DATABASE BS
+GO
+USE BS
 GO
 /****** Object:  Table [dbo].[tblKategorie]    Script Date: 22.01.2024 09:45:27 ******/
 SET ANSI_NULLS ON
