@@ -3,7 +3,7 @@
 -- Widok siê utworzy
 -- UWAGA! w widoku wszystkie kolumny musz¹ mieæ nazwy
 -- U¿ycie ALTER pozwala na zmianê ju¿ istniej¹cego widoku
-
+USE HM
 CREATE OR ALTER VIEW avg_sprzedaz AS (
 	SELECT avg(CenaSprz) AS srednia_sp FROM tbPozycjeFaktur 
 );
@@ -35,14 +35,14 @@ CREATE OR ALTER VIEW zestawienie_towarow AS (
 USE HM
 
 ;WITH PrefiltrowanePozycje AS (
-    SELECT FakturaID, SUM(CenaSprz) AS TotalCena 
+    SELECT FakturaID, SUM(CenaSprz) AS TotalCena  --- Stwórz VIEW z tego zapytania
     FROM tbPozycjeFaktur 
     WHERE Ilosc > 5
     GROUP BY FakturaID
 )
 SELECT f.IDFaktury, f.KlientID, p.TotalCena
 FROM tbFaktury f
-JOIN PrefiltrowanePozycje p ON f.IDFaktury = p.FakturaID
+JOIN PrefiltrowanePozycje p ON f.IDFaktury = p.FakturaID -- do³¹cz widok zamiast CTE
 
 
 
@@ -118,4 +118,10 @@ GO
 -- 1. Do poni¿szego zapytania dopisz warunek, który okreœla zakres dat (data od, data do) dla których
 -- chcemy wyœwietliæ wyniki. Zapisz zapytanie jako procedurê dodaj¹c do niej parametry data_od i data_do
 
-SELECT f.DataSprzed, t.wykonawca, t.tytul, pf.Ilosc, pf.CenaSprzFROM tbFaktury fJOIN tbPozycjeFaktur pf ON f.IDFaktury = pf.FakturaIDJOIN tbTowary t ON t.IDTowaru = pf.TowarID-- WHERE ....... uzupe³nij--utwórz procedurê ()
+SELECT f.DataSprzed, t.wykonawca, t.tytul, pf.Ilosc, pf.CenaSprz
+FROM tbFaktury f
+JOIN tbPozycjeFaktur pf ON f.IDFaktury = pf.FakturaID
+JOIN tbTowary t ON t.IDTowaru = pf.TowarID
+-- WHERE ....... uzupe³nij
+
+--utwórz procedurê ()

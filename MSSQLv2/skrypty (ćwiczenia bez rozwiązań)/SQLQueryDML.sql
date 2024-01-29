@@ -56,7 +56,7 @@ WHERE ID_Towar = 15
  -- 1. BS: W tabeli z towarami mamy wci¹¿ nazwy, które zawieraj¹ na poczêtku bia³e znaki. Dla wszystkich rekordów
  -- zamieñ nazwê, na wynik funkcji LTRIM na tej nazwie 
  -- 2. BS: Dodaj now¹ kategorie produktu, poczym przypisz do tej kategorii towary o id 5, 6, 7, 8
- -- 3. HM:  Poni¿szy skrypt stworzy now¹ pust¹ tabelê. Przenieœ do niej dane wszystkich uregulowanych ju¿ faktur (uregulowana = 1) poleceniem INSERT INTO ... SELECT.
+ -- 3. HM:  Poni¿szy skrypt sstworzy now¹ pust¹ tabelê. Przenieœ do niej dane wszystkich uregulowanych ju¿ faktur (uregulowana = 1) poleceniem INSERT INTO ... SELECT.
  -- 
 GO
 

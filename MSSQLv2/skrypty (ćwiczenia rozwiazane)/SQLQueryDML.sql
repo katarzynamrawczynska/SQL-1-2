@@ -56,7 +56,7 @@ WHERE ID_Towar = 15
  -- 1. BS: W tabeli z towarami mamy wci¹¿ nazwy, które zawieraj¹ na poczêtku bia³e znaki. Dla wszystkich rekordów
  -- zamieñ nazwê, na wynik funkcji LTRIM na tej nazwie 
  -- 2. BS: Dodaj now¹ kategorie produktu, poczym przypisz do tej kategorii towary o id 5, 6, 7, 8
- -- 3. HM:  Poni¿szy skrypt stworzy now¹ pust¹ tabelê. Przenieœ do niej dane wszystkich uregulowanych ju¿ faktur (uregulowana = 1) poleceniem INSERT INTO ... SELECT.
+ -- 3. HM:  Poni¿szy skrypt sstworzy now¹ pust¹ tabelê. Przenieœ do niej dane wszystkich uregulowanych ju¿ faktur (uregulowana = 1) poleceniem INSERT INTO ... SELECT.
  -- 
 GO
 
@@ -71,3 +71,32 @@ CREATE TABLE [dbo].[tbFaktury_Zaplacone](
 	FOREIGN KEY (KlientID) REFERENCES tbKlienci(IDKlienta)
 	);
 
+-- 1. BS: Usuniêcie bia³ych znaków na pocz¹tku nazw w tabeli z towarami
+UPDATE tblTowary
+SET NazwaTowaru = LTRIM(NazwaTowaru);
+
+-- 2. BS: Dodanie nowej kategorii produktu i przypisanie do niej towarów o ID 5, 6, 7, 8
+-- Najpierw dodajemy now¹ kategoriê
+INSERT INTO tblKategorie (NazwaKategorii) VALUES ('Nowa Kategoria');
+-- Nastêpnie przypisujemy towary do nowej kategorii
+UPDATE tblTowary
+SET Kategoria_ID = (SELECT MAX(ID_Kategoria) FROM tblKategorie) -- zak³adamy, ¿e nowa kategoria ma najwy¿sze ID
+WHERE ID_Towar IN (5, 6, 7, 8);
+
+-- 3. HM: Przeniesienie danych uregulowanych faktur do nowej tabeli
+-- Najpierw tworzymy now¹ tabelê
+
+CREATE TABLE [dbo].[tbFaktury_Zaplacone](
+	[IDFaktury] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[KlientID] [int] NULL,
+	[NrFaktury] [int] NOT NULL,
+	[DataSprzed] [datetime2](7) NULL,
+	[TerminPlat] [datetime2](7) NULL,
+	[Uregulowana] [bit] NULL,
+	[Uwagi] [nvarchar](100) NULL
+	FOREIGN KEY (KlientID) REFERENCES tbKlienci(IDKlienta)
+	);
+
+-- Nastêpnie przenosimy dane
+INSERT INTO tbFaktury_Zaplacone
+SELECT * FROM tbFaktury WHERE Uregulowana = 1;
