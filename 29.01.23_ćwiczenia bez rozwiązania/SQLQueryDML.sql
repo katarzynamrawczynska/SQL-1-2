@@ -3,10 +3,7 @@
 USE BS
 GO
 /*INSERT - UPDATE - DELETE*/
-	 -- IMPLICIT_TRANSACTIONS OFF - AUTOCOMMIT modfikacji danych w bazie
-	 -- IMPLICIT_TRANSACTIONS ON - aby zmiany zostaÅ‚y zapisane i widoczne dla innych uÅ¼ytkownikÃ³w naleÅ¼y po zmianach zatwierdziÄ‡ je przez COMMIT
-	SELECT IIF(@@OPTIONS & 2 = 0, 'IMPLICIT_TRANSACTIONS OFF', 'IMPLICIT_TRANSACTIONS ON')
-	--SET IMPLICIT_TRANSACTIONS OFF/ON
+
 
 BEGIN TRANSACTION
 INSERT INTO tblTowary VALUES (5, 'Banana', 566)
@@ -16,13 +13,13 @@ ROLLBACK
 
 
 INSERT INTO tblTowary (ID_Towar, Kategoria_ID, NazwaTowaru, Cena_Katalogowa) VALUES (36, 5, 'Papaja', 5.5)
-INSERT INTO tblTowary VALUES (37, 5, 'Kiwi', 5.5) -- bÅ‚Ä…d
+INSERT INTO tblTowary VALUES (37, 5, 'Kiwi', 5.5) -- b³¹d
 INSERT INTO tblTowary VALUES (5, 'Banana', 5.5)
 
 
 INSERT INTO HM.dbo.tbKlienci 
 SELECT NazwaFirmy, Miasto, Kod, Ulica, 'N/A'
-FROM BS.dbo.tblKlienci   -- wystÄ…pi bÅ‚Ä…d, co moÅ¼emy zrobiÄ‡ w tej sytuacji? left, case?
+FROM BS.dbo.tblKlienci   -- wyst¹pi b³¹d, co mo¿emy zrobiæ w tej sytuacji? left, case?
 
 
 UPDATE tblTowary
@@ -47,27 +44,19 @@ WHERE Towar_ID = 103 AND Sprzedaz_ID =
 DELETE FROM tblTowary
 WHERE ID_Towar = 36
 
--- PK rekordu jest FK w innej tabeli, przy prÃ³bie usuniÄ™cia pojawi siÄ™ bÅ‚Ä…d
+-- PK rekordu jest FK w innej tabeli, przy próbie usuniêcia pojawi siê b³¹d
 
 DELETE FROM tblTowary
 WHERE ID_Towar = 15
 
--- SprÃ³bujmy rozwiÄ…zaÄ‡ problem: 
+-- Spróbujmy rozwi¹zaæ problem: 
 
 
-<<<<<<< HEAD
 /*æwiczenia*/
  -- 1. BS: W tabeli z towarami mamy wci¹¿ nazwy, które zawieraj¹ na poczêtku bia³e znaki. Dla wszystkich rekordów
  -- zamieñ nazwê, na wynik funkcji LTRIM na tej nazwie 
  -- 2. BS: Dodaj now¹ kategorie produktu, poczym przypisz do tej kategorii towary o id 5, 6, 7, 8
  -- 3. HM:  Poni¿szy skrypt stworzy now¹ pust¹ tabelê. Przenieœ do niej dane wszystkich uregulowanych ju¿ faktur (uregulowana = 1) poleceniem INSERT INTO ... SELECT.
-=======
-/*Ä‡wiczenia*/
- -- 1. BS: W tabeli z towarami mamy wciÄ…Å¼ nazwy, ktÃ³re zawierajÄ… na poczÄ™tku biaÅ‚e znaki. Dla wszystkich rekordÃ³w
- -- zamieÅ„ nazwÄ™, na wynik funkcji LTRIM na tej nazwie 
- -- 2. BS: Dodaj nowÄ… kategorie produktu, poczym przypisz do tej kategorii towary o id 5, 6, 7, 8
- -- 3. HM:  PoniÅ¼szy skrypt sstworzy nowÄ… pustÄ… tabelÄ™. PrzenieÅ› do niej dane wszystkich uregulowanych juÅ¼ faktur (uregulowana = 1) poleceniem INSERT INTO ... SELECT.
->>>>>>> 9a0381036428bda83bf00f6f44518d87ede1391b
  -- 
 GO
 
