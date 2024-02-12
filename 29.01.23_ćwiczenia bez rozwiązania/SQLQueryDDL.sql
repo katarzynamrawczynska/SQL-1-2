@@ -60,8 +60,23 @@ USE HM
 --	b. KodKategoria typu nvarchar(4) o wartoœciach unikalnych z not null
 --  c. Nazwa typu nvarchar(50) z not null
 
+CREATE TABLE tbKategorieTowarow (
+IDKategoria INT PRIMARY KEY IDENTITY (1,1),
+KodKategoria NVARCHAR(4) UNIQUE NOT NULL,
+nazwa NVARCHAR(50) NOT NULL
+)
+
+
 -- 2. To tabeli tbTowary dodaj kolumnê KategoriaID typu int. W kolejnej komendzie dodaj obostrzenie - klucz obcy o nazwie FK_Towary_Kategorie
 --	na kolumnie KategoriaID referuj¹cy do tabeli tbKategorieTowarow(IDKategoria)
+ALTER TABLE tbTowary 
+ALTER COLUMN  KategoriaID INT
 
+ALTER TABLE tbTowary 
+ADD CONSTRAINT FK_KAT FOREIGN KEY (KategoriaID) REFERENCES tbKategorieTowarow(IDKategoria)
 -- 3. Usuñ kolumnê KategoriaID z tbTowary - najpierw musisz usun¹æ CONSTRAINT FK_Towary_Kategorie, potem dopiero kolumnê
 -- 4. Usuñ tabelê tbKategorieTowarow
+
+ALTER TABLE tbTowary
+--DROP CONSTRAINT FK_KAT
+DROP COLUMN KategoriaID
