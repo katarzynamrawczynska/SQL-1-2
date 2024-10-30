@@ -64,7 +64,7 @@ OR dataSprzed = (SELECT MIN(dataSprzed) FROM tbFaktury)
 /* CTE */
 -- Zastêpowanie subzapytania przez CTE - jak widaæ, przy tak prostym CTE kwerenda jest d³u¿sza ni¿ z subselect
 -- Na zwiêz³oœci zyskamy, gdy u¿ywamy tego samego wyra¿enia w kilku miejscach
-
+CREATE VIEW v AS (
 WITH NajdrozszyTowar AS (
     SELECT MAX(cena) AS MaxCena
     FROM tbTowary
@@ -72,7 +72,16 @@ WITH NajdrozszyTowar AS (
 SELECT cena, wykonawca + ' - ' + tytul
 FROM tbTowary
 WHERE cena = (SELECT MaxCena FROM NajdrozszyTowar)
+)
 
+CREATE VIEW vv AS
+WITH NajdrozszyTowarx AS (
+    SELECT MAX(cena) AS MaxCena
+    FROM tbTowary
+)
+SELECT cena,  wykonawca + ' - ' + tytul AS wt
+FROM  tbTowary
+WHERE cena = (SELECT MaxCena FROM NajdrozszyTowarx);
 
 -- U¿ycie CTE zamiast ANY
 WITH NazwyFirm AS (

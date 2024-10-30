@@ -50,42 +50,31 @@ ORDER BY wartosc DESC
 /* æwiczenia */
 -- 1. Baza HM: dla ka¿dego wykonawcy wyœwietl nazwa, œredni¹ cene, oraz sumê cen jego albumów (HM -> tbTowary). 
 --		Posortuj wyniki po nazwie wykonawcy, a nastêpnie usuñ z wyniku te zespo³y, dla których œrednia jest mniejsza od 35
--- 2. Baza Sprzeda¿: Wyœwietl nazwê i iloœæ zamówieñ (tab sprzeda¿) dla ka¿dego klienta. Posortuj po iloœci zamówieñ
--- 3. Baza Sprzeda¿: wyœwietl w jednym polu, oddzielone przecinkami, nazwiska pracowników z podzia³em na stanowiska. 
-
-
-
-/* FUNKCJE OKNA */
-
-
-/* OVER, FUNKCJE RANKINGOWE  baza danych HM */
-
--- rozwi¹zanie z u¿yciem GRUPOWANIA
 SELECT 
-    FakturaID,
-    SUM(CenaSprz * Ilosc) AS TotalAmount
-FROM tbPozycjeFaktur
-GROUP BY FakturaID;
-
--- Alternatywa z u¿yciem OVER
-SELECT DISTINCT
-    FakturaID, -- *, -- dane siê nie agreguj¹, mo¿emy wyœwietliæ wszystkie kolumny
-    SUM(CenaSprz * Ilosc) OVER(PARTITION BY FakturaID) AS TotalAmount
-FROM dbo.tbPozycjeFaktur;
-
-SELECT DISTINCT
-	IDKlienta, 
-	nazwa, 
-	miasto,
-	COUNT(IDFaktury) OVER (PARTITION BY KlientID) AS IloscFaktur
-FROM tbKlienci k
-JOIN tbFaktury f ON k.IDKlienta = f.KlientID
-ORDER BY IloscFaktur DESC
+    wykonawca, 
+    AVG(cena) AS SredniaCena, 
+    SUM(cena) AS SumaCen
+FROM tbTowary
+GROUP BY wykonawca
+HAVING AVG(cena) >= 35
+ORDER BY wykonawca;
 
 
--- 1. Baza HM: dla ka¿dego wykonawcy wyœwietl nazwa, œredni¹ cene, oraz sumê cen jego albumów (HM -> tbTowary). 
---		Posortuj wyniki po nazwie wykonawcy.
+-- 2. Baza Sprzeda¿: Wyœwietl nazwê i iloœæ zamówieñ (tab sprzeda¿) dla ka¿dego klienta. Posortuj po iloœci zamówieñ
+USE BS
+SELECT 
+    K.NazwaFirmy, 
+    COUNT(S.ID_Sprzedaz) AS IloscZamowien
+FROM tblSprzedaz S
+JOIN tblKlienci K ON S.Klient_ID = K.ID_Klient
+GROUP BY K.NazwaFirmy
+ORDER BY IloscZamowien DESC;
 
+-- 3. Baza Sprzeda¿: wyœwietl w jednym polu, oddzielone przecinkami, nazwiska pracowników z podzia³em na stanowiska. 
+SELECT 
+    Stanowisko, 
+    STRING_AGG(Nazwisko, ', ') AS Pracownicy
+FROM tblPracownicy
+GROUP BY Stanowisko;
 
--- 2. Baza BS: Wyœwietl pracowników (imie, nazwisko) oraz iloœæ zamówieñ, które obs³ugiwali. 
 

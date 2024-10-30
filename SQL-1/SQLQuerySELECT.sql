@@ -141,6 +141,5 @@ FROM tblSprzedaz;
 -- 3. Z tabeli z opisem sprzeda¿y wyœwietl wartoœæ sprzeda¿y - (cena * ilosc) "zaokr¹glone w dó³" (FLOOR)
 --		do liczb ca³kowitych
 -- 4. SprawdŸ ile dni up³ynê³o od '2020-01-01' (DATEDIFF, nie trzeba u¿ywaæ FROM)
--- 5. wyœwietl id i daty sprzedarzy posortowane po dniu tygodnia tej sprzedarzy (DATENAME, weekday)
---		jeœli bêd¹ takie same posortuj po dniu miesi¹ca (DATENAME, day)
+
 

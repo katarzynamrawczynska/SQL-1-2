@@ -124,8 +124,7 @@ SELECT
     NTILE(4) OVER(PARTITION BY f.IDFaktury ORDER BY p.CenaSprz DESC) AS 'KwartylCeny'
 FROM tbFaktury f
 JOIN tbPozycjeFaktur p ON f.IDFaktury = p.FakturaID
-ORDER BY 
-    f.IDFaktury, p.CenaSprz DESC;
+ORDER BY f.IDFaktury, p.CenaSprz DESC;
 
 /* æwiczenia */
 -- 1. zmieñ partycjonowanie wyników na ID klienta - dodaj do wyników nazwê klienta - nale¿y do³¹czyæ tabelê

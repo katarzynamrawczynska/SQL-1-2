@@ -49,18 +49,32 @@ FROM
 
 /* æwiczenia */
 -- 1.  Wyœwietl wszystkie dane faktur wraz z opisem najœwie¿szej i najstarszej faktury w bazie (MAX i MIN data)
-
+SELECT * FROM tbFaktury
+WHERE DataSprzed = (SELECT MAX(DataSprzed) FROM tbFaktury) OR DataSprzed = (SELECT MIN(DataSprzed) FROM tbFaktury)
 -- 2. W poni¿szym zapytaniu dodaj WHERE, który wybierze tylko te pozycje faktur, w których towar jest na noœniku CD
-
 SELECT pf.FakturaID, SUM(pf.CenaSprz)
 FROM tbFaktury f
 JOIN tbPozycjeFaktur pf ON f.IDFaktury = pf.FakturaID
-	--WHERE pf.TowarID IN ...
-GROUP BY pf.FakturaID
+JOIN tbTowary t ON pf.TowarID = t.IDTowaru
+WHERE t.Nosnik = 'CD'
+GROUP BY pf.FakturaID;
+
 
 -- 3. Napisz zapytanie, które wyci¹ga dane faktur z 2005 roku. Gotowe zapytanie po³¹cz jako subselect z tabel¹ 
 -- pozycje faktur, oraz towary. Z podanych wyœwietl datê faktury (z podzapytania z fakturami), nazwê wykonawcy 
 -- i albumu(towary), oraz cenê sprzeda¿y (pozycje faktur)
+SELECT 
+    f2005.DataSprzed, 
+    t.Wykonawca, 
+    t.Tytul AS Album, 
+    pf.CenaSprz
+FROM (
+    SELECT IDFaktury, DataSprzed 
+    FROM tbFaktury 
+    WHERE YEAR(DataSprzed) = 2005
+) AS f2005
+JOIN tbPozycjeFaktur pf ON f2005.IDFaktury = pf.FakturaID
+JOIN tbTowary t ON pf.TowarID = t.IDTowaru;
 
 
 
@@ -91,6 +105,22 @@ JOIN (
 
 
 /*æwiczenia*/
--- 1. Utwórz widok z numerami faktur, dat¹ sprzeda¿y oraz nazw¹ klienta z fakturami z bie¿¹ce
+-- 1. Utwórz widok z numerami faktur, dat¹ sprzeda¿y oraz nazw¹ klienta z fakturami z roku 2004
+CREATE VIEW faktury2004 AS(
+SELECT NrFaktury, DataSprzed, nazwa 
+FROM tbFaktury f
+JoIN tbKlienci k ON f.KlientID = k.IDKlienta
+WHERE YEAR(DataSprzed) = 2004)
+
+
 -- 2 Wybierz towary które nie nale¿¹ do kategorii 1 i 2. wyœwietl nazwy i ceny zaokr¹glone do jednego miejsca po przecinku (ROUND)
 -- po przetestowaniu zapisz wynik jako widok i napisz SELECT wybieraj¹cy z niego tylko 3 najtañsze produkty.
+USE BS
+CREATE VIEW TowaryGr1Gr2 AS (
+SELECT NazwaTowaru, ROUND(Cena_Katalogowa,1) Cena_Katalogowa FROM tblTowary
+WHERE Kategoria_ID IN (1,2)
+)
+
+SELECT TOP 3 *
+FROM TowaryGr1Gr2
+ORDER BY Cena_Katalogowa

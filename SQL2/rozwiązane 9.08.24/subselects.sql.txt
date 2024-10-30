@@ -1,0 +1,27 @@
+/*ćwiczenia*/
+-- 1.  Wyświetl wszystkie najświeższej i najstarszej faktury w bazie (MAX i MIN(DataSprzed))
+SELECT * FROM tbFaktury
+--WHERE DataSprzed = (SELECT MAX(DataSprzed) FROM tbFaktury)
+--	OR DataSprzed = (SELECT MIN(DataSprzed) FROM tbFaktury)
+WHERE DataSprzed IN ( (SELECT MAX(DataSprzed) FROM tbFaktury), (SELECT MIN(DataSprzed) FROM tbFaktury))
+-- 2. W poniższym zapytaniu dodaj WHERE, który wybierze tylko te pozycje faktur, w których towar jest na nośniku CD
+SELECT pf.FakturaID, SUM(pf.CenaSprz)
+FROM tbFaktury f
+JOIN tbPozycjeFaktur pf ON f.IDFaktury = pf.FakturaID
+ WHERE TowarID IN (SELECT IDTowaru FROM tbTowary WHERE nosnik = 'CD')
+GROUP BY pf.FakturaID
+-- 3. Napisz zapytanie, które wyciąga dane faktur z 2005 roku. Gotowe zapytanie połącz jako subselect z tabelą 
+-- pozycje faktur, oraz towary. Z podanych wyświetl datę faktury (z podzapytania z fakturami), nazwę wykonawcy 
+-- i albumu(towary), oraz cenę sprzedaży (pozycje faktur)
+SELECT * FROM tbFaktury
+WHERE YEAR(DataSprzed) = 2005
+
+
+SELECT t.tytul, t.wykonawca, faktury2005.DataSprzed, pf.CenaSprz
+FROM (SELECT DataSprzed, IDFaktury, KlientID 
+	FROM tbFaktury
+	WHERE YEAR(DataSprzed) = 2005 ) faktury2005
+JOIN tbPozycjeFaktur pf ON faktury2005.IDFaktury = pf.FakturaID
+JOIN tbTowary t ON pf.TowarID = t.IDTowaru
+
+WHERE KlientID = 1
